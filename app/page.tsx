@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
 import { getUserResponses } from '@/lib/db';
 
 const COURSE_MODULES = [
@@ -56,9 +55,6 @@ const COURSE_MODULES = [
 
 export default async function HomePage() {
   const user = await currentUser();
-  if (!user) {
-    redirect('/sign-in');
-  }
 
   const lessonId = 'professional-communication-1';
   const sections = ['vocabulary', 'speaking', 'email-writing', 'homework'];
