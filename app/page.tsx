@@ -91,7 +91,7 @@ export default async function HomePage() {
             <div className='mb-8 inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm text-gray-600 shadow-sm'>
               <span>Welcome back,</span>
               <span className='font-medium text-blue-600'>
-                {user.firstName || user.emailAddresses[0]?.emailAddress}
+                {user?.firstName || user?.emailAddresses[0]?.emailAddress}
               </span>
               {progressPercentage === 100 && (
                 <span className='ml-2 flex h-2 w-2'>
