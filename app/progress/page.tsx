@@ -1,6 +1,4 @@
-import { currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
-import { getUserResponses } from '@/lib/db';
+import { getUserResponses } from '@/lib/actions';
 import DashboardLayout from '@/app/_components/DashboardLayout';
 
 const SECTIONS = [
@@ -31,11 +29,6 @@ const MODULES = [
 ];
 
 export default async function ProgressPage() {
-  const user = await currentUser();
-  if (!user) {
-    redirect('/sign-in');
-  }
-
   const lessonId = 'professional-communication-1';
   // Get submissions for each section
   const submissions = await Promise.all(

@@ -1,7 +1,7 @@
-import { getUserResponses } from '@/lib/db';
+import { getUserResponses } from '@/lib/actions';
 
 interface Response {
-  id: string;
+  _id: string;
   content: string;
   lessonId: string;
   sectionId: string;
@@ -155,7 +155,7 @@ export default async function SavedResponses({
       <div className='space-y-4'>
         {responses.map((response: Response) => (
           <div
-            key={response.id}
+            key={response._id}
             className='p-4 bg-gray-50 rounded-lg border border-gray-100'
           >
             <div className='flex justify-between items-start gap-4'>

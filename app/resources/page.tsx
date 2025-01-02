@@ -1,13 +1,8 @@
-import { currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
 import DashboardLayout from '@/app/_components/DashboardLayout';
 import Translator from '@/app/_components/resources/Translator';
 
 export default async function ResourcesPage() {
-  const user = await currentUser();
-  if (!user) {
-    redirect('/sign-in');
-  }
+
 
   return (
     <DashboardLayout>

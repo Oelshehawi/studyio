@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { currentUser } from '@clerk/nextjs/server';
-import { getUserResponses } from '@/lib/db';
+import { getUserResponses } from '@/lib/actions';
 
 const COURSE_MODULES = [
   {

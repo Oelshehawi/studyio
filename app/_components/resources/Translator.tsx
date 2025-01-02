@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { translate } from '@/app/lib/actions';
+import { translate } from '@/lib/actions';
 
 export default function Translator() {
   const [sourceText, setSourceText] = useState('');

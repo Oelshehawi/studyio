@@ -22,9 +22,6 @@ export default function ProfessionalCommunicationLesson({
             <h1 className='text-3xl font-bold text-gray-900 mb-2'>
               Today&apos;s English Lesson: Professional Communication 🎯
             </h1>
-            <p className='text-gray-800'>
-              Designed for Egyptian Arabic speakers learning Business English
-            </p>
           </div>
         </div>
       </div>
