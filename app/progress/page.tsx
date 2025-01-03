@@ -1,6 +1,8 @@
 import { getUserResponses } from '@/lib/actions';
 import DashboardLayout from '@/app/_components/DashboardLayout';
 
+export const dynamic = 'force-dynamic';
+
 const SECTIONS = [
   { id: 'vocabulary', title: 'Vocabulary & Phrases' },
   { id: 'speaking', title: 'Speaking Practice' },

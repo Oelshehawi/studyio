@@ -1,16 +1,5 @@
 import { getUserResponses } from '@/lib/actions';
 
-interface Response {
-  _id: string;
-  content: string;
-  lessonId: string;
-  sectionId: string;
-  userId: string;
-  audioUrl: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 interface VocabularyExercise {
   type: 'matching' | 'fillInBlank' | 'multipleChoice';
   answers: string[];
@@ -153,7 +142,7 @@ export default async function SavedResponses({
     <div className='mt-6 space-y-6 text-black'>
       <h3 className='text-lg font-medium text-gray-900'>Your Submissions</h3>
       <div className='space-y-4'>
-        {responses.map((response: Response) => (
+        {responses.map((response) => (
           <div
             key={response._id}
             className='p-4 bg-gray-50 rounded-lg border border-gray-100'
