@@ -8,6 +8,7 @@ export default clerkMiddleware(
       await auth.protect();
     }
   },
+  { debug: true }
 );
 
 export const config = {
