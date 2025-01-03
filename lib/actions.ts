@@ -80,18 +80,23 @@ export async function createUser() {
 }
 
 export async function getCurrentUser() {
-  const session = await auth();
-  if (!session.userId) return null;
+  try {
+    const session = await auth();
+    if (!session?.userId) return null;
 
-  await dbConnect();
-  let user = await User.findOne({ clerkId: session.userId });
+    await dbConnect();
+    let user = await User.findOne({ clerkId: session.userId });
 
-  // If user doesn't exist, create them
-  if (!user) {
-    user = await createUser();
+    // If user doesn't exist, create them
+    if (!user) {
+      user = await createUser();
+    }
+
+    return user ? serialize(user) : null;
+  } catch (error) {
+    console.error('Error in getCurrentUser:', error);
+    return null;
   }
-
-  return user ? serialize(user) : null;
 }
 
 export async function getUserResponses(lessonId: string, sectionId?: string) {
@@ -209,45 +214,44 @@ export async function submitHomework(formData: FormData) {
 }
 
 export async function translate({
-    text,
-    sourceLang,
-    targetLang,
-  }: {
-    text: string;
-    sourceLang: string;
-    targetLang: string;
-  }) {
-    try {
-      const response = await fetch(
-        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
-          text
-        )}&langpair=${sourceLang}|${targetLang}`
-      );
-  
-      const data = (await response.json()) as MyMemoryResponse;
-  
-      if (!response.ok || data.responseStatus !== 200) {
-        console.error('Translation error:', data);
-        return { error: data.responseMessage || 'Translation failed' };
-      }
-  
-      // MyMemory provides matches array with alternative translations
-      const alternatives =
-        data.matches
-          ?.filter(
-            (match) => match.translation !== data.responseData.translatedText
-          )
-          .map((match) => match.translation)
-          .slice(0, 3) || [];
-  
-      return {
-        success: true,
-        translation: data.responseData.translatedText,
-        alternatives,
-      };
-    } catch (error) {
-      console.error('Translation error:', error);
-      return { error: 'Translation failed' };
+  text,
+  sourceLang,
+  targetLang,
+}: {
+  text: string;
+  sourceLang: string;
+  targetLang: string;
+}) {
+  try {
+    const response = await fetch(
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
+        text
+      )}&langpair=${sourceLang}|${targetLang}`
+    );
+
+    const data = (await response.json()) as MyMemoryResponse;
+
+    if (!response.ok || data.responseStatus !== 200) {
+      console.error('Translation error:', data);
+      return { error: data.responseMessage || 'Translation failed' };
     }
+
+    // MyMemory provides matches array with alternative translations
+    const alternatives =
+      data.matches
+        ?.filter(
+          (match) => match.translation !== data.responseData.translatedText
+        )
+        .map((match) => match.translation)
+        .slice(0, 3) || [];
+
+    return {
+      success: true,
+      translation: data.responseData.translatedText,
+      alternatives,
+    };
+  } catch (error) {
+    console.error('Translation error:', error);
+    return { error: 'Translation failed' };
   }
-  
+}
