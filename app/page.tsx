@@ -59,6 +59,7 @@ export default async function HomePage() {
   const lessonId = 'professional-communication-1';
   const sections = ['vocabulary', 'speaking', 'email-writing', 'homework'];
 
+  console.log('this ran')
   // Get submissions for each section
   const submissions = await Promise.all(
     sections.map(async (sectionId) => {

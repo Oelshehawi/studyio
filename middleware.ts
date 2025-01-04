@@ -1,34 +1,20 @@
-import { clerkMiddleware } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-interface ClerkError extends Error {
-  message: string;
-}
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)']);
 
-export default clerkMiddleware(async (auth, request) => {
-  try {
-    console.log(`[Middleware] Processing request for: ${request.url}`);
-
-    // Check if this is a redirect from Clerk
-    if (request.nextUrl.searchParams.has('__clerk_handshake')) {
-      console.log('[Middleware] Handling Clerk handshake');
-      return NextResponse.next();
+export default clerkMiddleware(
+  async (auth, request) => {
+    if (!isPublicRoute(request)) {
+      await auth.protect();
     }
-
-    const response = NextResponse.next();
-    console.log('[Middleware] Request processed successfully');
-    return response;
-  } catch (error) {
-    console.error('[Middleware] Error:', error);
-    // If it's a redirect error, let it proceed
-    if ((error as ClerkError)?.message === 'NEXT_REDIRECT') {
-      console.log('[Middleware] Handling redirect');
-      return NextResponse.next();
-    }
-    throw error;
-  }
-});
+  },
+);
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
 };
