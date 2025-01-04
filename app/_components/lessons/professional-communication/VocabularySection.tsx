@@ -194,16 +194,18 @@ export default function VocabularySection({
         const matchingContent = exercise.content as MatchingExercise['content'];
         return (
           <div className='space-y-4'>
-            <h3 className='font-medium text-lg text-gray-900'>
+            <h3 className='font-medium text-lg text-gray-900 dark:text-white'>
               {exercise.title}
             </h3>
             <div className='grid gap-4'>
               {matchingContent.map((item, index) => (
                 <div key={index} className='flex flex-col space-y-2'>
-                  <p className='font-medium text-gray-800'>{item.phrase}</p>
+                  <p className='font-medium text-gray-800 dark:text-gray-200'>
+                    {item.phrase}
+                  </p>
                   <select
                     value={currentAnswers[index] || ''}
-                    className='p-2 border rounded-md text-gray-900'
+                    className='p-2 border rounded-md text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600'
                     onChange={(e) => {
                       const newAnswers = [...currentAnswers];
                       newAnswers[index] = e.target.value;
@@ -215,7 +217,7 @@ export default function VocabularySection({
                       <option
                         key={i}
                         value={option.usage}
-                        className='text-gray-900'
+                        className='text-gray-900 dark:text-white'
                       >
                         {option.usage}
                       </option>
@@ -233,17 +235,19 @@ export default function VocabularySection({
           exercise.content as FillInBlankExercise['content'];
         return (
           <div className='space-y-4'>
-            <h3 className='font-medium text-lg text-gray-900'>
+            <h3 className='font-medium text-lg text-gray-900 dark:text-white'>
               {exercise.title}
             </h3>
             <div className='grid gap-4'>
               {fillInBlankContent.map((item, index) => (
                 <div key={index} className='space-y-2'>
-                  <p className='text-gray-800'>{item.example}</p>
+                  <p className='text-gray-800 dark:text-gray-200'>
+                    {item.example}
+                  </p>
                   <input
                     type='text'
                     value={currentAnswers[index] || ''}
-                    className='w-full p-2 border rounded-md text-gray-900'
+                    className='w-full p-2 border rounded-md text-gray-900 dark:text-white dark:bg-gray-700 dark:border-gray-600'
                     placeholder='Type the missing phrase'
                     onChange={(e) => {
                       const newAnswers = [...currentAnswers];
@@ -263,13 +267,13 @@ export default function VocabularySection({
           exercise.content as MultipleChoiceExercise['content'];
         return (
           <div className='space-y-4'>
-            <h3 className='font-medium text-lg text-gray-900'>
+            <h3 className='font-medium text-lg text-gray-900 dark:text-white'>
               {exercise.title}
             </h3>
             <div className='grid gap-6'>
               {multipleChoiceContent.map((item, index) => (
                 <div key={index} className='space-y-2'>
-                  <p className='font-medium text-gray-800'>
+                  <p className='font-medium text-gray-800 dark:text-gray-200'>
                     When would you use: &quot;{item.phrase}&quot;?
                   </p>
                   <div className='grid gap-2'>
@@ -288,9 +292,11 @@ export default function VocabularySection({
                             newAnswers[index] = e.target.value;
                             updateAnswers(newAnswers);
                           }}
-                          className='text-blue-600'
+                          className='text-blue-600 dark:text-blue-400'
                         />
-                        <span className='text-gray-700'>{option}</span>
+                        <span className='text-gray-700 dark:text-gray-300'>
+                          {option}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -315,15 +321,15 @@ export default function VocabularySection({
                 currentExercise === index
                   ? 'bg-blue-600 text-white'
                   : isExerciseComplete(index)
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-100'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {index + 1}
             </button>
           ))}
         </div>
-        <div className='text-sm text-gray-600'>
+        <div className='text-sm text-gray-600 dark:text-gray-400'>
           {currentExercise + 1} of {exercises.length}
         </div>
       </div>
@@ -334,7 +340,7 @@ export default function VocabularySection({
         <button
           onClick={handlePrevious}
           disabled={currentExercise === 0}
-          className='px-4 py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50'
+          className='px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50'
         >
           Previous
         </button>
@@ -359,7 +365,7 @@ export default function VocabularySection({
       </div>
 
       {showFeedback && (
-        <div className='mt-4 p-4 bg-green-50 text-green-800 rounded-md'>
+        <div className='mt-4 p-4 bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-100 rounded-md'>
           Your answers have been saved successfully!
         </div>
       )}

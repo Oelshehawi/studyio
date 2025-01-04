@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { UserButton, useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { ThemeProvider } from './ThemeProvider';
+import ThemeToggle from './ThemeToggle';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -100,108 +102,111 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50'>
-      {/* Navigation Header */}
-      <div className='fixed w-full z-10 top-0'>
-        <div className='py-6 px-4 sm:px-6 lg:px-8'>
-          <div className='lg:ml-64'>
-            <div className='max-w-4xl mx-auto px-2 sm:px-6'>
-              <div className='bg-white/80 backdrop-blur-sm shadow-sm rounded-xl'>
-                <div className='flex justify-between h-16 px-4'>
-                  <div className='flex items-center'>
-                    <button
-                      onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                      className='lg:hidden p-2 -ml-2 rounded-md text-gray-600 hover:text-gray-900'
-                    >
-                      <svg
-                        className='h-6 w-6'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        stroke='currentColor'
+    <ThemeProvider>
+      <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+        {/* Navigation Header */}
+        <div className='fixed w-full z-10 top-0'>
+          <div className='py-6 px-4 sm:px-6 lg:px-8'>
+            <div className='lg:ml-64'>
+              <div className='max-w-4xl mx-auto px-2 sm:px-6'>
+                <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm rounded-xl'>
+                  <div className='flex justify-between h-16 px-4'>
+                    <div className='flex items-center'>
+                      <button
+                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                        className='lg:hidden p-2 -ml-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                       >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth={2}
-                          d='M4 6h16M4 12h16M4 18h16'
-                        />
-                      </svg>
-                    </button>
-                    <Link
-                      href='/'
-                      className='text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors ml-2 lg:ml-0'
-                    >
-                      StudyIO
-                    </Link>
-                  </div>
-                  <div className='flex items-center gap-6'>
-                    <div className='hidden sm:block'>
-                      <span className='text-sm text-gray-600'>
-                        {user?.emailAddresses[0]?.emailAddress}
-                      </span>
+                        <svg
+                          className='h-6 w-6'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          stroke='currentColor'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M4 6h16M4 12h16M4 18h16'
+                          />
+                        </svg>
+                      </button>
+                      <Link
+                        href='/'
+                        className='text-xl font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors ml-2 lg:ml-0'
+                      >
+                        StudyIO
+                      </Link>
                     </div>
-                    <UserButton />
+                    <div className='flex items-center gap-6'>
+                      <div className='hidden sm:block'>
+                        <span className='text-sm text-gray-600 dark:text-gray-300'>
+                          {user?.emailAddresses[0]?.emailAddress}
+                        </span>
+                      </div>
+                      <ThemeToggle />
+                      <UserButton />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Sidebar Overlay */}
-      {isSidebarOpen && (
-        <div
-          className='fixed inset-0 bg-gray-600 bg-opacity-75 z-20 lg:hidden'
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
+        {/* Mobile Sidebar Overlay */}
+        {isSidebarOpen && (
+          <div
+            className='fixed inset-0 bg-gray-600 bg-opacity-75 z-20 lg:hidden'
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
 
-      {/* Sidebar and Main Content */}
-      <div className='lg:flex pt-28'>
-        {/* Sidebar */}
-        <div
-          className={`
-          fixed z-30 bg-white shadow-sm
-          lg:inset-y-0 lg:left-0 lg:w-64 lg:translate-y-0 lg:h-full
-          w-full h-[30%] bottom-0 rounded-t-3xl lg:rounded-none
-          transform transition-all duration-300 ease-in-out
-          ${isSidebarOpen ? 'translate-y-0' : 'translate-y-full'}
-        `}
-        >
-          <div className=' overflow-y-auto'>
-            {/* Mobile Handle */}
-            <div className='lg:hidden w-12 h-1.5 bg-gray-300 rounded-full mx-auto my-4' />
-            <div className='space-y-1 p-4'>
-              {NAVIGATION_ITEMS.map((item) => (
-                <Link
-                  key={item.title}
-                  href={item.href}
-                  onClick={() => setIsSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-2 text-sm rounded-md transition-colors
-                    ${
-                      isActive(item.href)
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
-                    }
-                  `}
-                >
-                  {item.icon}
-                  {item.title}
-                </Link>
-              ))}
+        {/* Sidebar and Main Content */}
+        <div className='lg:flex pt-28'>
+          {/* Sidebar */}
+          <div
+            className={`
+            fixed z-30 bg-white dark:bg-gray-800 shadow-sm
+            lg:inset-y-0 lg:left-0 lg:w-64 lg:translate-y-0 lg:h-full
+            w-full h-[30%] bottom-0 rounded-t-3xl lg:rounded-none
+            transform transition-all duration-300 ease-in-out
+            ${isSidebarOpen ? 'translate-y-0' : 'translate-y-full'}
+          `}
+          >
+            <div className='overflow-y-auto'>
+              {/* Mobile Handle */}
+              <div className='lg:hidden w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto my-4' />
+              <div className='space-y-1 p-4'>
+                {NAVIGATION_ITEMS.map((item) => (
+                  <Link
+                    key={item.title}
+                    href={item.href}
+                    onClick={() => setIsSidebarOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-2 text-sm rounded-md transition-colors
+                      ${
+                        isActive(item.href)
+                          ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-blue-600 dark:hover:text-blue-400'
+                      }
+                    `}
+                  >
+                    {item.icon}
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Main Content */}
-        <div className='flex-1 lg:ml-64'>
-          <main className='py-6 px-4 sm:px-6 lg:px-8'>
-            <div className='max-w-4xl mx-auto px-2 sm:px-6'>{children}</div>
-          </main>
+          {/* Main Content */}
+          <div className='flex-1 lg:ml-64'>
+            <main className='py-6 px-4 sm:px-6 lg:px-8'>
+              <div className='max-w-4xl mx-auto px-2 sm:px-6'>{children}</div>
+            </main>
+          </div>
         </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 

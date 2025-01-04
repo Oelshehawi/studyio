@@ -19,7 +19,7 @@ export default function ProfessionalCommunicationLesson({
       <div className='mb-8'>
         <div className='flex justify-between items-start'>
           <div>
-            <h1 className='text-3xl font-bold text-gray-900 mb-2'>
+            <h1 className='text-3xl font-bold text-gray-900 dark:text-white mb-2'>
               Today&apos;s English Lesson: Professional Communication 🎯
             </h1>
           </div>
@@ -39,7 +39,7 @@ export default function ProfessionalCommunicationLesson({
           <VocabularySection lessonId={lessonId} />
           <Suspense
             fallback={
-              <div className='mt-4 animate-pulse h-32 bg-gray-100 rounded-md' />
+              <div className='mt-4 animate-pulse h-32 bg-gray-100 dark:bg-gray-700 rounded-md' />
             }
           >
             <SavedResponses lessonId={lessonId} sectionId='vocabulary' />
@@ -52,10 +52,10 @@ export default function ProfessionalCommunicationLesson({
           sectionNumber={3}
         >
           <div className='space-y-4'>
-            <p className='text-gray-800'>
+            <p className='text-gray-800 dark:text-gray-200'>
               Record yourself (1-2 minutes) talking about:
             </p>
-            <ul className='list-disc list-inside space-y-2 text-gray-800'>
+            <ul className='list-disc list-inside space-y-2 text-gray-800 dark:text-gray-200'>
               <li>Your current job</li>
               <li>Your career goals</li>
               <li>A challenge at work</li>
@@ -63,7 +63,7 @@ export default function ProfessionalCommunicationLesson({
             <AudioRecorder lessonId={lessonId} />
             <Suspense
               fallback={
-                <div className='mt-4 animate-pulse h-32 bg-gray-100 rounded-md' />
+                <div className='mt-4 animate-pulse h-32 bg-gray-100 dark:bg-gray-700 rounded-md' />
               }
             >
               <SavedResponses lessonId={lessonId} sectionId='speaking' />
@@ -79,7 +79,7 @@ export default function ProfessionalCommunicationLesson({
           <EmailExercise lessonId={lessonId} />
           <Suspense
             fallback={
-              <div className='mt-8 animate-pulse h-32 bg-gray-100 rounded-md' />
+              <div className='mt-8 animate-pulse h-32 bg-gray-100 dark:bg-gray-700 rounded-md' />
             }
           >
             <SavedResponses lessonId={lessonId} sectionId='email-writing' />
@@ -90,7 +90,7 @@ export default function ProfessionalCommunicationLesson({
           <HomeworkSection lessonId={lessonId} />
           <Suspense
             fallback={
-              <div className='mt-4 animate-pulse h-32 bg-gray-100 rounded-md' />
+              <div className='mt-4 animate-pulse h-32 bg-gray-100 dark:bg-gray-700 rounded-md' />
             }
           >
             <SavedResponses lessonId={lessonId} sectionId='homework' />
@@ -98,8 +98,8 @@ export default function ProfessionalCommunicationLesson({
         </LessonCard>
       </div>
 
-      <div className='mt-8 p-4 bg-green-50 rounded-md'>
-        <p className='text-gray-900 font-medium'>
+      <div className='mt-8 p-4 bg-green-50 dark:bg-green-900/20 rounded-md'>
+        <p className='text-gray-900 dark:text-gray-100 font-medium'>
           Next Topic: Coming Soon Practice! 🎯
         </p>
       </div>

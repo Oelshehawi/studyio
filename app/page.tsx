@@ -77,20 +77,20 @@ export default async function HomePage() {
   );
 
   return (
-    <div className='min-h-screen bg-gradient-to-b from-blue-50 to-white'>
+    <div className='min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 dark:text-white'>
       {/* Hero Section */}
       <div className='max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8'>
         <div className='text-center mb-16 relative'>
           {/* Background Pattern */}
           <div className='absolute inset-0 -z-10'>
-            <div className='absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]' />
+            <div className='absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] dark:bg-[radial-gradient(#374151_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]' />
           </div>
 
           <div className='relative'>
             {/* User Welcome */}
-            <div className='mb-8 inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm text-gray-600 shadow-sm'>
+            <div className='mb-8 inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full text-sm text-gray-600 dark:text-gray-300 shadow-sm'>
               <span>Welcome back,</span>
-              <span className='font-medium text-blue-600'>
+              <span className='font-medium text-blue-600 dark:text-blue-400'>
                 {user?.firstName || user?.emailAddresses[0]?.emailAddress}
               </span>
               {progressPercentage === 100 && (
@@ -101,10 +101,10 @@ export default async function HomePage() {
               )}
             </div>
 
-            <h1 className='text-4xl font-bold text-gray-900 mb-4 sm:text-5xl'>
+            <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:text-5xl'>
               Welcome to StudyIO! 👋
             </h1>
-            <p className='text-xl text-gray-600 max-w-2xl mx-auto'>
+            <p className='text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto'>
               Your journey to professional English mastery starts here. Learn at
               your own pace with our interactive lessons designed specifically
               for Egyptian Arabic speakers.
@@ -114,21 +114,29 @@ export default async function HomePage() {
 
         {/* Quick Stats */}
         <div className='grid gap-4 sm:grid-cols-3 max-w-3xl mx-auto mb-16'>
-          <div className='bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-gray-100'>
-            <div className='text-3xl font-bold text-blue-600 mb-1'>
+          <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700'>
+            <div className='text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1'>
               {progressPercentage}%
             </div>
-            <div className='text-sm text-gray-600'>Course Progress</div>
+            <div className='text-sm text-gray-600 dark:text-gray-300'>
+              Course Progress
+            </div>
           </div>
-          <div className='bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-gray-100'>
-            <div className='text-3xl font-bold text-blue-600 mb-1'>
+          <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700'>
+            <div className='text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1'>
               {completedSections}
             </div>
-            <div className='text-sm text-gray-600'>Completed Sections</div>
+            <div className='text-sm text-gray-600 dark:text-gray-300'>
+              Completed Sections
+            </div>
           </div>
-          <div className='bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-gray-100'>
-            <div className='text-3xl font-bold text-blue-600 mb-1'>1</div>
-            <div className='text-sm text-gray-600'>Available Lessons</div>
+          <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700'>
+            <div className='text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1'>
+              1
+            </div>
+            <div className='text-sm text-gray-600 dark:text-gray-300'>
+              Available Lessons
+            </div>
           </div>
         </div>
 
@@ -139,32 +147,34 @@ export default async function HomePage() {
               <Link
                 key={module.id}
                 href={`/lessons/${module.id}`}
-                className='group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200'
+                className='group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md transition-all duration-200'
               >
                 <div className='p-8'>
                   <div className='flex items-start justify-between mb-4'>
                     <div>
                       <span className='text-4xl mb-4 block'>{module.icon}</span>
-                      <h2 className='text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors'>
+                      <h2 className='text-2xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
                         {module.title}
                       </h2>
                     </div>
                     {progressPercentage === 100 && (
-                      <span className='bg-green-50 text-green-800 px-3 py-1 rounded-full text-sm font-medium'>
+                      <span className='bg-green-50 dark:bg-green-900 text-green-800 dark:text-green-100 px-3 py-1 rounded-full text-sm font-medium'>
                         Completed
                       </span>
                     )}
                   </div>
-                  <p className='text-gray-600 mb-6'>{module.description}</p>
+                  <p className='text-gray-600 dark:text-gray-300 mb-6'>
+                    {module.description}
+                  </p>
                   <div className='space-y-3'>
-                    <h3 className='text-sm font-medium text-gray-900'>
+                    <h3 className='text-sm font-medium text-gray-900 dark:text-white'>
                       What you&apos;ll learn:
                     </h3>
                     <div className='flex flex-wrap gap-2'>
                       {module.skills.map((skill) => (
                         <span
                           key={skill}
-                          className='px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm'
+                          className='px-3 py-1 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-100 rounded-full text-sm'
                         >
                           {skill}
                         </span>
@@ -176,33 +186,35 @@ export default async function HomePage() {
             ) : (
               <div
                 key={module.id}
-                className='relative overflow-hidden bg-gray-50/80 backdrop-blur-sm rounded-2xl border border-gray-100'
+                className='relative overflow-hidden bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-100 dark:border-gray-700'
               >
                 <div className='p-8 opacity-75'>
                   <span className='text-4xl mb-4 block filter grayscale'>
                     {module.icon}
                   </span>
-                  <h2 className='text-2xl font-bold text-gray-600 mb-2'>
+                  <h2 className='text-2xl font-bold text-gray-600 dark:text-gray-400 mb-2'>
                     {module.title}
                   </h2>
-                  <p className='text-gray-500 mb-6'>{module.description}</p>
+                  <p className='text-gray-500 dark:text-gray-500 mb-6'>
+                    {module.description}
+                  </p>
                   <div className='space-y-3'>
-                    <h3 className='text-sm font-medium text-gray-600'>
+                    <h3 className='text-sm font-medium text-gray-600 dark:text-gray-400'>
                       What you&apos;ll learn:
                     </h3>
                     <div className='flex flex-wrap gap-2'>
                       {module.skills.map((skill) => (
                         <span
                           key={skill}
-                          className='px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-sm'
+                          className='px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-full text-sm'
                         >
                           {skill}
                         </span>
                       ))}
                     </div>
                   </div>
-                  <div className='absolute inset-0 bg-gray-50/50 backdrop-blur-sm flex items-center justify-center'>
-                    <span className='px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium'>
+                  <div className='absolute inset-0 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm flex items-center justify-center'>
+                    <span className='px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full text-sm font-medium'>
                       Coming Soon
                     </span>
                   </div>

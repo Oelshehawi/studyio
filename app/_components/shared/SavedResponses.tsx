@@ -28,7 +28,9 @@ function formatVocabularyResponse(content: string) {
 
           return (
             <div key={index} className='space-y-2'>
-              <h4 className='font-medium text-gray-900'>{exerciseTitle}</h4>
+              <h4 className='font-medium text-gray-900 dark:text-white'>
+                {exerciseTitle}
+              </h4>
               {exercise.type === 'matching' && (
                 <div className='grid gap-2'>
                   {[
@@ -39,7 +41,7 @@ function formatVocabularyResponse(content: string) {
                   ].map((phrase, i) => (
                     <div
                       key={i}
-                      className='flex items-center gap-2 text-gray-700'
+                      className='flex items-center gap-2 text-gray-700 dark:text-gray-300'
                     >
                       <span className='font-medium'>{phrase}:</span>
                       <span>{exercise.answers[i]}</span>
@@ -57,7 +59,7 @@ function formatVocabularyResponse(content: string) {
                   ].map((phrase, i) => (
                     <div
                       key={i}
-                      className='flex items-center gap-2 text-gray-700'
+                      className='flex items-center gap-2 text-gray-700 dark:text-gray-300'
                     >
                       <span className='font-medium'>{phrase}</span>
                       <span>{exercise.answers[i]}</span>
@@ -74,7 +76,7 @@ function formatVocabularyResponse(content: string) {
                   ].map((phrase, i) => (
                     <div
                       key={i}
-                      className='flex items-center gap-2 text-gray-700'
+                      className='flex items-center gap-2 text-gray-700 dark:text-gray-300'
                     >
                       <span className='font-medium'>{phrase}:</span>
                       <span>{exercise.answers[i]}</span>
@@ -97,7 +99,7 @@ function formatAudioResponse(content: string) {
     const data = JSON.parse(content);
     return (
       <div className='flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3'>
-        <div className='w-full sm:flex-1 bg-white rounded-lg p-2 border border-gray-200'>
+        <div className='w-full sm:flex-1 bg-white dark:bg-gray-800 rounded-lg p-2 border border-gray-200 dark:border-gray-700'>
           <audio
             controls
             src={data.audio}
@@ -105,9 +107,33 @@ function formatAudioResponse(content: string) {
             controlsList='nodownload noplaybackrate'
           />
         </div>
-        <span className='text-sm text-gray-600 font-medium px-2'>
+        <span className='text-sm text-gray-600 dark:text-gray-400 font-medium px-2'>
           {data.duration ? `${Math.round(data.duration)}s` : ''}
         </span>
+      </div>
+    );
+  } catch {
+    return content;
+  }
+}
+
+function formatEmailResponse(content: string) {
+  try {
+    const [subjectLine, ...bodyLines] = content.split('\n');
+    const subject = subjectLine.startsWith('Subject:')
+      ? subjectLine.substring(8).trim()
+      : '';
+    const body = bodyLines.join('\n').trim();
+
+    return (
+      <div className='space-y-3 text-gray-800 dark:text-gray-200'>
+        {subject && (
+          <div>
+            <span className='font-medium'>Subject: </span>
+            <span>{subject}</span>
+          </div>
+        )}
+        <p className='whitespace-pre-wrap'>{body}</p>
       </div>
     );
   } catch {
@@ -121,6 +147,9 @@ function formatResponse(content: string, sectionId: string) {
   }
   if (sectionId === 'speaking') {
     return formatAudioResponse(content);
+  }
+  if (sectionId === 'email-writing' || sectionId === 'email') {
+    return formatEmailResponse(content);
   }
   return content;
 }
@@ -139,19 +168,21 @@ export default async function SavedResponses({
   }
 
   return (
-    <div className='mt-6 space-y-6 text-black'>
-      <h3 className='text-lg font-medium text-gray-900'>Your Submissions</h3>
+    <div className='mt-6 space-y-6 text-black dark:text-white'>
+      <h3 className='text-lg font-medium text-gray-900 dark:text-white'>
+        Your Submissions
+      </h3>
       <div className='space-y-4'>
         {responses.map((response) => (
           <div
             key={response._id}
-            className='p-4 bg-gray-50 rounded-lg border border-gray-100'
+            className='p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-700'
           >
             <div className='flex justify-between items-start gap-4'>
               <div className='flex-1 min-w-0'>
                 {formatResponse(response.content || '', sectionId)}
               </div>
-              <time className='text-sm text-gray-500 whitespace-nowrap'>
+              <time className='text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap'>
                 {new Date(response.createdAt).toLocaleDateString()}
               </time>
             </div>

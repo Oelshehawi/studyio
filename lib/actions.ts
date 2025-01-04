@@ -44,35 +44,19 @@ export async function createUser() {
   await dbConnect();
 
   try {
-    // Try to find existing user first
-    let user = await User.findOne({ clerkId: userId });
-    if (user) return serialize(user);
-
     // Get user data from Clerk
     const clerkUser = await currentUser();
     const email = clerkUser?.emailAddresses[0]?.emailAddress;
     if (!email) return null;
 
-    // Try to create user, if it fails due to duplicate, find and return existing
-    try {
-      user = await User.create({
-        clerkId: userId,
-        email,
-      });
-      return serialize(user);
-    } catch (error) {
-      // If error is duplicate key, try to find the user again
-      if (
-        error &&
-        typeof error === 'object' &&
-        'code' in error &&
-        error.code === 11000
-      ) {
-        user = await User.findOne({ clerkId: userId });
-        return serialize(user);
-      }
-      throw error;
-    }
+    // Use findOneAndUpdate with upsert to prevent race conditions
+    const user = await User.findOneAndUpdate(
+      { clerkId: userId },
+      { email },
+      { upsert: true, new: true }
+    );
+
+    return serialize(user);
   } catch (error) {
     console.error('Error in createUser:', error);
     return null;
@@ -201,15 +185,6 @@ export async function submitVocabulary(formData: FormData) {
     lessonId,
     sectionId: 'vocabulary',
     content: formData.get('sentences') as string,
-  });
-}
-
-export async function submitHomework(formData: FormData) {
-  const lessonId = formData.get('lessonId') as string;
-  await saveResponse({
-    lessonId,
-    sectionId: 'homework',
-    content: formData.get('homework') as string,
   });
 }
 
