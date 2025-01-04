@@ -35,7 +35,7 @@ export default function CasualConversationLesson({
           timeNeeded='10 mins'
           sectionNumber={1}
         >
-          <WatchSection />
+          <WatchSection lessonId={lessonId} />
         </LessonCard>
 
         <LessonCard

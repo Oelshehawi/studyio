@@ -32,6 +32,14 @@ const CASUAL_SECTIONS: Section[] = [
   { id: 'speaking', title: 'Speaking Practice' },
 ];
 
+const TAX_SECTIONS: Section[] = [
+  { id: 'tax-basics', title: 'Tax Basics & Vocabulary' },
+  { id: 'income-tax', title: 'Income Tax Essentials' },
+  { id: 'deductions', title: 'Credits & Deductions' },
+  { id: 'filing', title: 'Filing Process' },
+  { id: 'scenarios', title: 'Real-life Scenarios' },
+];
+
 const WORKPLACE_SECTIONS: Section[] = [
   { id: 'etiquette', title: 'Workplace Etiquette' },
   { id: 'collaboration', title: 'Team Collaboration' },
@@ -56,6 +64,11 @@ const MODULES: Module[] = [
     id: 'professional-communication-1',
     title: 'Professional Communication',
     sections: PROFESSIONAL_SECTIONS,
+  },
+  {
+    id: 'tax-essentials-1',
+    title: 'Tax Talk: BC Edition',
+    sections: TAX_SECTIONS,
   },
   {
     id: 'workplace-culture-1',

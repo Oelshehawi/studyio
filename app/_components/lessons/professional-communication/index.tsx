@@ -28,7 +28,7 @@ export default function ProfessionalCommunicationLesson({
 
       <div className='space-y-6'>
         <LessonCard title='Watch First' timeNeeded='15 mins' sectionNumber={1}>
-          <WatchSection />
+          <WatchSection lessonId={lessonId} />
         </LessonCard>
 
         <LessonCard
@@ -96,12 +96,6 @@ export default function ProfessionalCommunicationLesson({
             <SavedResponses lessonId={lessonId} sectionId='homework' />
           </Suspense>
         </LessonCard>
-      </div>
-
-      <div className='mt-8 p-4 bg-green-50 dark:bg-green-900/20 rounded-md'>
-        <p className='text-gray-900 dark:text-gray-100 font-medium'>
-          Next Topic: Coming Soon Practice! 🎯
-        </p>
       </div>
     </div>
   );

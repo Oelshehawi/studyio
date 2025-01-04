@@ -24,6 +24,12 @@ const LESSONS = [
     icon: '💼',
   },
   {
+    id: 'tax-essentials-1',
+    title: 'Tax Talk: BC Edition',
+    isActive: true,
+    icon: '📊',
+  },
+  {
     id: 'workplace-culture-1',
     title: 'Canadian Workplace Culture',
     isActive: false,
