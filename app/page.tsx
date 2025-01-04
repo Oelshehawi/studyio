@@ -1,229 +1,167 @@
 import Link from 'next/link';
-import { currentUser } from '@clerk/nextjs/server';
-import { getUserResponses } from '@/lib/actions';
+import DashboardLayout from './_components/LessonLayout';
 
 const COURSE_MODULES = [
   {
+    id: 'casual-conversation-1',
+    title: 'Casual Conversations',
+    description:
+      'Master everyday English conversations with confidence and fun.',
+    icon: '💬',
+    isActive: true,
+    skills: [
+      'Small Talk',
+      'Expressing Opinions',
+      'Storytelling',
+      'Cultural Exchange',
+    ],
+  },
+  {
     id: 'professional-communication-1',
     title: 'Professional Communication',
-    description:
-      'Learn essential phrases and techniques for effective workplace communication.',
+    description: 'Learn to communicate effectively in professional settings.',
     icon: '💼',
     isActive: true,
     skills: [
       'Email Writing',
-      'Meeting Vocabulary',
-      'Professional Phrases',
-      'Business Small Talk',
+      'Meeting Participation',
+      'Presentations',
+      'Business Etiquette',
     ],
   },
   {
-    id: 'business-writing-1',
-    title: 'Business Writing',
-    description: 'Master the art of professional business writing.',
-    icon: '✍️',
+    id: 'workplace-culture-1',
+    title: 'Canadian Workplace Culture',
+    description:
+      'Coming Soon - Understand and adapt to Canadian work environment.',
+    icon: '🍁',
     isActive: false,
     skills: [
-      'Report Writing',
-      'Proposal Creation',
-      'Email Etiquette',
-      'Document Formatting',
+      'Workplace Etiquette',
+      'Team Collaboration',
+      'Work-Life Balance',
+      'Office Communication',
     ],
   },
   {
-    id: 'job-interviews-1',
-    title: 'Job Interviews',
-    description: 'Prepare for job interviews with confidence.',
-    icon: '🎯',
+    id: 'daily-life-1',
+    title: 'Daily Life in Canada',
+    description:
+      'Coming Soon - Essential English for living and working in Canada.',
+    icon: '🏙️',
     isActive: false,
     skills: [
-      'Common Questions',
-      'Professional Responses',
-      'Body Language',
-      'Follow-up Emails',
+      'Healthcare & Services',
+      'Banking & Finance',
+      'Housing & Utilities',
+      'Transportation',
     ],
-  },
-  {
-    id: 'daily-conversations-1',
-    title: 'Daily Conversations',
-    description: 'Practice everyday English conversations.',
-    icon: '💬',
-    isActive: false,
-    skills: ['Small Talk', 'Phone Calls', 'Social Events', 'Shopping & Dining'],
   },
 ];
 
-export default async function HomePage() {
-  const user = await currentUser();
-
-  const lessonId = 'professional-communication-1';
-  const sections = ['vocabulary', 'speaking', 'email-writing', 'homework'];
-
-  // Get submissions for each section
-  const submissions = await Promise.all(
-    sections.map(async (sectionId) => {
-      const responses = await getUserResponses(lessonId, sectionId);
-      return {
-        sectionId,
-        hasSubmission: responses && responses.length > 0,
-      };
-    })
-  );
-
-  // Calculate progress percentage
-  const completedSections = submissions.filter((s) => s.hasSubmission).length;
-  const progressPercentage = Math.round(
-    (completedSections / sections.length) * 100
-  );
-
+export default function Home() {
   return (
-    <div className='min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 dark:text-white'>
-      {/* Hero Section */}
-      <div className='max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8'>
-        <div className='text-center mb-16 relative'>
-          {/* Background Pattern */}
-          <div className='absolute inset-0 -z-10'>
-            <div className='absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] dark:bg-[radial-gradient(#374151_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]' />
-          </div>
-
-          <div className='relative'>
-            {/* User Welcome */}
-            <div className='mb-8 inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full text-sm text-gray-600 dark:text-gray-300 shadow-sm'>
-              <span>Welcome back,</span>
-              <span className='font-medium text-blue-600 dark:text-blue-400'>
-                {user?.firstName || user?.emailAddresses[0]?.emailAddress}
-              </span>
-              {progressPercentage === 100 && (
-                <span className='ml-2 flex h-2 w-2'>
-                  <span className='animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75'></span>
-                  <span className='relative inline-flex rounded-full h-2 w-2 bg-green-500'></span>
-                </span>
-              )}
-            </div>
-
-            <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:text-5xl'>
-              Welcome to StudyIO! 👋
-            </h1>
-            <p className='text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto'>
-              Your journey to professional English mastery starts here. Learn at
-              your own pace with our interactive lessons designed specifically
-              for Egyptian Arabic speakers.
-            </p>
-          </div>
+    <DashboardLayout>
+      <div className='max-w-4xl mx-auto'>
+        <div className='mb-8'>
+          <h1 className='text-3xl font-bold text-gray-900 dark:text-white mb-2'>
+            Welcome to StudyIO 👋
+          </h1>
+          <p className='text-gray-600 dark:text-gray-300'>
+            Your personalized English learning journey starts here
+          </p>
         </div>
 
-        {/* Quick Stats */}
-        <div className='grid gap-4 sm:grid-cols-3 max-w-3xl mx-auto mb-16'>
-          <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700'>
-            <div className='text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1'>
-              {progressPercentage}%
-            </div>
-            <div className='text-sm text-gray-600 dark:text-gray-300'>
-              Course Progress
-            </div>
-          </div>
-          <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700'>
-            <div className='text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1'>
-              {completedSections}
-            </div>
-            <div className='text-sm text-gray-600 dark:text-gray-300'>
-              Completed Sections
-            </div>
-          </div>
-          <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700'>
-            <div className='text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1'>
-              1
-            </div>
-            <div className='text-sm text-gray-600 dark:text-gray-300'>
-              Available Lessons
-            </div>
-          </div>
-        </div>
-
-        {/* Course Grid */}
-        <div className='grid gap-8 md:grid-cols-2'>
-          {COURSE_MODULES.map((module) =>
-            module.isActive ? (
-              <Link
-                key={module.id}
-                href={`/lessons/${module.id}`}
-                className='group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md transition-all duration-200'
-              >
-                <div className='p-8'>
-                  <div className='flex items-start justify-between mb-4'>
-                    <div>
-                      <span className='text-4xl mb-4 block'>{module.icon}</span>
-                      <h2 className='text-2xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
-                        {module.title}
-                      </h2>
-                    </div>
-                    {progressPercentage === 100 && (
-                      <span className='bg-green-50 dark:bg-green-900 text-green-800 dark:text-green-100 px-3 py-1 rounded-full text-sm font-medium'>
-                        Completed
-                      </span>
-                    )}
+        <div className='grid gap-6 md:grid-cols-2'>
+          {COURSE_MODULES.map((module) => (
+            <div
+              key={module.id}
+              className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden ${
+                !module.isActive ? 'opacity-75' : ''
+              }`}
+            >
+              <div className='p-6'>
+                <div className='flex items-start gap-4'>
+                  <span className='text-3xl'>{module.icon}</span>
+                  <div>
+                    <h2 className='text-xl font-semibold text-gray-900 dark:text-white'>
+                      {module.title}
+                    </h2>
+                    <p className='text-gray-600 dark:text-gray-300 mt-1'>
+                      {module.description}
+                    </p>
                   </div>
-                  <p className='text-gray-600 dark:text-gray-300 mb-6'>
-                    {module.description}
-                  </p>
-                  <div className='space-y-3'>
-                    <h3 className='text-sm font-medium text-gray-900 dark:text-white'>
-                      What you&apos;ll learn:
-                    </h3>
-                    <div className='flex flex-wrap gap-2'>
+                </div>
+
+                {module.isActive && module.skills.length > 0 && (
+                  <>
+                    <div className='mt-4 flex flex-wrap gap-2'>
                       {module.skills.map((skill) => (
                         <span
                           key={skill}
-                          className='px-3 py-1 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-100 rounded-full text-sm'
+                          className='px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-sm'
                         >
                           {skill}
                         </span>
                       ))}
                     </div>
+
+                    <Link
+                      href={`/lessons/${module.id}`}
+                      className='mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300'
+                    >
+                      Start Learning
+                      <svg
+                        className='ml-2 w-4 h-4'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        stroke='currentColor'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M9 5l7 7-7 7'
+                        />
+                      </svg>
+                    </Link>
+                  </>
+                )}
+
+                {!module.isActive && (
+                  <div className='mt-4 inline-flex items-center text-gray-500 dark:text-gray-400'>
+                    <svg
+                      className='mr-2 w-4 h-4'
+                      fill='none'
+                      viewBox='0 0 24 24'
+                      stroke='currentColor'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+                      />
+                    </svg>
+                    Coming Soon
                   </div>
-                </div>
-              </Link>
-            ) : (
-              <div
-                key={module.id}
-                className='relative overflow-hidden bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-100 dark:border-gray-700'
-              >
-                <div className='p-8 opacity-75'>
-                  <span className='text-4xl mb-4 block filter grayscale'>
-                    {module.icon}
-                  </span>
-                  <h2 className='text-2xl font-bold text-gray-600 dark:text-gray-400 mb-2'>
-                    {module.title}
-                  </h2>
-                  <p className='text-gray-500 dark:text-gray-500 mb-6'>
-                    {module.description}
-                  </p>
-                  <div className='space-y-3'>
-                    <h3 className='text-sm font-medium text-gray-600 dark:text-gray-400'>
-                      What you&apos;ll learn:
-                    </h3>
-                    <div className='flex flex-wrap gap-2'>
-                      {module.skills.map((skill) => (
-                        <span
-                          key={skill}
-                          className='px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-full text-sm'
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className='absolute inset-0 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm flex items-center justify-center'>
-                    <span className='px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full text-sm font-medium'>
-                      Coming Soon
-                    </span>
-                  </div>
-                </div>
+                )}
               </div>
-            )
-          )}
+            </div>
+          ))}
+        </div>
+
+        <div className='mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6'>
+          <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>
+            Quick Tip 💡
+          </h3>
+          <p className='text-gray-700 dark:text-gray-300'>
+            Start with the Casual Conversations lesson to build confidence in
+            everyday English interactions. Then move on to Professional
+            Communication to enhance your workplace language skills.
+          </p>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

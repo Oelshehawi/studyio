@@ -1,4 +1,4 @@
-import DashboardLayout from '@/app/_components/DashboardLayout';
+import DashboardLayout from '@/app/_components/LessonLayout';
 import Translator from '@/app/_components/resources/Translator';
 
 export default async function ResourcesPage() {

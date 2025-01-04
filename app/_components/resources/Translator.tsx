@@ -56,7 +56,7 @@ export default function Translator() {
           <select
             value={sourceLang}
             onChange={(e) => setSourceLang(e.target.value)}
-            className='w-full p-2 border rounded-md text-gray-900 bg-white'
+            className='w-full p-2 border rounded-md text-gray-900 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-600'
           >
             <option value='en'>English</option>
             <option value='ar'>Arabic</option>
@@ -64,7 +64,7 @@ export default function Translator() {
         </div>
         <button
           onClick={handleSwapLanguages}
-          className='p-2 text-gray-600 hover:text-gray-900'
+          className='p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
         >
           <svg
             className='w-5 h-5'
@@ -84,7 +84,7 @@ export default function Translator() {
           <select
             value={targetLang}
             onChange={(e) => setTargetLang(e.target.value)}
-            className='w-full p-2 border rounded-md text-gray-900 bg-white'
+            className='w-full p-2 border rounded-md text-gray-900 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-600'
           >
             <option value='ar'>Arabic</option>
             <option value='en'>English</option>
@@ -98,37 +98,37 @@ export default function Translator() {
             value={sourceText}
             onChange={(e) => setSourceText(e.target.value)}
             placeholder='Enter text to translate...'
-            className='w-full h-40 p-3 border rounded-lg text-gray-900 placeholder-gray-400'
+            className='w-full h-40 p-3 border rounded-lg text-gray-900 dark:text-white bg-white dark:bg-gray-700 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500'
             dir={sourceLang === 'ar' ? 'rtl' : 'ltr'}
           />
         </div>
         <div className='space-y-4'>
           <div
-            className={`w-full h-40 p-3 border rounded-lg bg-gray-50 text-gray-900 ${
+            className={`w-full h-40 p-3 border rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white border-gray-200 dark:border-gray-600 ${
               isLoading ? 'animate-pulse' : ''
             }`}
             dir={targetLang === 'ar' ? 'rtl' : 'ltr'}
           >
             {error ? (
-              <span className='text-red-600'>{error}</span>
+              <span className='text-red-600 dark:text-red-400'>{error}</span>
             ) : translation ? (
               translation
             ) : (
-              <span className='text-gray-400'>
+              <span className='text-gray-400 dark:text-gray-500'>
                 Translation will appear here...
               </span>
             )}
           </div>
           {alternatives.length > 0 && (
             <div className='space-y-2'>
-              <p className='text-sm text-gray-600 font-medium'>
+              <p className='text-sm text-gray-600 dark:text-gray-400 font-medium'>
                 Alternative translations:
               </p>
               <div className='space-y-1'>
                 {alternatives.map((alt, index) => (
                   <div
                     key={index}
-                    className='p-2 bg-white border rounded-md text-gray-800 cursor-pointer hover:bg-gray-50'
+                    className='p-2 bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-md text-gray-800 dark:text-gray-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600'
                     onClick={() => setTranslation(alt)}
                     dir={targetLang === 'ar' ? 'rtl' : 'ltr'}
                   >
@@ -145,7 +145,7 @@ export default function Translator() {
         <button
           onClick={handleTranslate}
           disabled={isLoading || !sourceText.trim()}
-          className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50'
+          className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
         >
           {isLoading ? 'Translating...' : 'Translate'}
         </button>
