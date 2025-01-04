@@ -100,38 +100,18 @@ export async function getCurrentUser() {
 }
 
 export async function getUserResponses(lessonId: string, sectionId?: string) {
-  // const user = await getCurrentUser();
-  // if (!user) return null;
+  const user = await getCurrentUser();
+  if (!user) return null;
 
-  // await dbConnect();
-  // const query = {
-  //   userId: user._id,
-  //   lessonId,
-  //   ...(sectionId ? { sectionId } : {}),
-  // };
+  await dbConnect();
+  const query = {
+    userId: user._id,
+    lessonId,
+    ...(sectionId ? { sectionId } : {}),
+  };
 
-  // const responses = await Response.find(query).sort({ createdAt: -1 });
-  // return serialize(responses);
-
-  // Return mock data instead
-  return [
-    {
-      _id: '1',
-      content: 'Mock response 1',
-      lessonId,
-      sectionId: sectionId || 'default',
-      createdAt: new Date().toISOString(),
-      userId: 'mock-user-id',
-    },
-    {
-      _id: '2',
-      content: 'Mock response 2',
-      lessonId,
-      sectionId: sectionId || 'default',
-      createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-      userId: 'mock-user-id',
-    },
-  ];
+  const responses = await Response.find(query).sort({ createdAt: -1 });
+  return serialize(responses);
 }
 
 export async function saveResponse(data: {

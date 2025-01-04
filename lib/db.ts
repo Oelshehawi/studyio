@@ -34,11 +34,32 @@ async function dbConnect() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      connectTimeoutMS: 10000, // 10 seconds
+      socketTimeoutMS: 45000, // 45 seconds
+      maxPoolSize: 50,
+      serverSelectionTimeoutMS: 10000, // 10 seconds
+      heartbeatFrequencyMS: 1000, // Check server status every second
+      retryWrites: true,
+      retryReads: true,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+    cached.promise = mongoose
+      .connect(MONGODB_URI, opts)
+      .then((mongoose) => {
+        console.log('MongoDB connected successfully');
+        return mongoose;
+      })
+      .catch((error) => {
+        console.error('MongoDB connection error details:', {
+          code: error.code,
+          codeName: error.codeName,
+          name: error.name,
+          message: error.message,
+          // Log the first part of the connection string (hiding credentials)
+          uri: MONGODB_URI.split('@')[1] || 'hidden',
+        });
+        throw error;
+      });
   }
 
   try {
