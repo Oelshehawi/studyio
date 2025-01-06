@@ -22,12 +22,6 @@ interface CasualConversationResponse {
   type?: 'conversation' | 'story' | 'opinion';
 }
 
-interface Response {
-  _id: string;
-  content: string;
-  createdAt: string;
-}
-
 interface TaxQuizAnswer {
   question: string;
   selectedAnswer: string;
@@ -585,6 +579,16 @@ function formatResponse(content: string, sectionId: string, lessonId: string) {
   return content;
 }
 
+interface DbResponse {
+  _id: string;
+  content: string;
+  createdAt: string;
+  lessonId: string;
+  sectionId: string;
+  userId: string;
+  __v: number;
+}
+
 export default async function SavedResponses({
   lessonId,
   sectionId,
@@ -592,7 +596,9 @@ export default async function SavedResponses({
   lessonId: string;
   sectionId: string;
 }) {
-  const responses = await getUserResponses(lessonId, sectionId);
+  const responses = (await getUserResponses(lessonId, sectionId)) as
+    | DbResponse[]
+    | null;
 
   if (!responses?.length) {
     return null;
@@ -604,7 +610,7 @@ export default async function SavedResponses({
         Your Submissions
       </h3>
       <div className='space-y-4'>
-        {responses.map((response: Response) => (
+        {responses.map((response) => (
           <div
             key={response._id}
             className='p-3 sm:p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-700'

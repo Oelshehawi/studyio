@@ -6,6 +6,7 @@ import dbConnect from './db';
 import { User } from '@/models/User';
 import { Response } from '@/models/Response';
 import { Progress } from '@/models/Progress';
+import { openai } from '@/lib/openai';
 
 interface MyMemoryMatch {
   id: string;
@@ -83,18 +84,51 @@ export async function getCurrentUser() {
   }
 }
 
-export async function getUserResponses(lessonId: string, sectionId?: string) {
+export async function getUserResponses(
+  lessonId: string | 'all',
+  sectionId?: string
+) {
   const user = await getCurrentUser();
   if (!user) return null;
 
   await dbConnect();
-  const query = {
+
+  interface ResponseQuery {
+    userId: string;
+    lessonId?: string;
+    sectionId?: {
+      $in?: string[];
+      $eq?: string;
+    };
+  }
+
+  // Base query with user ID
+  const query: ResponseQuery = {
     userId: user._id,
-    lessonId,
-    ...(sectionId ? { sectionId } : {}),
   };
 
-  const responses = await Response.find(query).sort({ createdAt: -1 });
+  // Add lessonId to query only if it's not 'all'
+  if (lessonId !== 'all') {
+    query.lessonId = lessonId;
+  }
+
+  // Add section filtering
+  if (sectionId) {
+    query.sectionId = { $eq: sectionId };
+  } else {
+    // Only include longform answer sections
+    query.sectionId = {
+      $in: [
+        'email-writing', // Professional email responses
+        'storytelling', // Narrative responses in casual conversation
+        'opinion', // Opinion/discussion responses
+        'homework', // Homework responses with key points and questions
+      ],
+    };
+  }
+
+  const responses = await Response.find(query).sort({ createdAt: -1 }).lean();
+
   return serialize(responses);
 }
 
@@ -228,5 +262,173 @@ export async function translate({
   } catch (error) {
     console.error('Translation error:', error);
     return { error: 'Translation failed' };
+  }
+}
+
+interface FeedbackSections {
+  strengths: string[];
+  improvements: string[];
+  actions: string[];
+}
+
+interface BilingualFeedback {
+  en: FeedbackSections;
+  ar: FeedbackSections;
+}
+
+interface Feedback {
+  grade: string;
+  advice: BilingualFeedback;
+}
+
+function extractBilingualFeedback(feedback: string): BilingualFeedback {
+  // Extract English sections
+  const englishStrengths =
+    feedback
+      .match(/Strengths:\n((?:•[^\n]+\n?)+)/)?.[1]
+      .split('\n')
+      .filter((line) => line.startsWith('•'))
+      .map((line) => line.replace('•', '').trim()) || [];
+
+  const englishImprovements =
+    feedback
+      .match(/Areas for Improvement:\n((?:•[^\n]+\n?)+)/)?.[1]
+      .split('\n')
+      .filter((line) => line.startsWith('•'))
+      .map((line) => line.replace('•', '').trim()) || [];
+
+  const englishActions =
+    feedback
+      .match(/Action Items:\n((?:[\d]\.[^\n]+\n?)+)/)?.[1]
+      .split('\n')
+      .filter((line) => /^\d\./.test(line))
+      .map((line) => line.replace(/^\d\./, '').trim()) || [];
+
+  // Extract Arabic sections
+  const arabicStrengths =
+    feedback
+      .match(/النقاط الحلوة:\n((?:•[^\n]+\n?)+)/)?.[1]
+      .split('\n')
+      .filter((line) => line.startsWith('•'))
+      .map((line) => line.replace('•', '').trim()) || [];
+
+  const arabicImprovements =
+    feedback
+      .match(/المحتاج شغل:\n((?:•[^\n]+\n?)+)/)?.[1]
+      .split('\n')
+      .filter((line) => line.startsWith('•'))
+      .map((line) => line.replace('•', '').trim()) || [];
+
+  const arabicActions =
+    feedback
+      .match(/عشان تتحسن لازم:\n((?:[١٢٣]\.[^\n]+\n?)+)/)?.[1]
+      .split('\n')
+      .filter((line) => /^[١٢٣]\./.test(line))
+      .map((line) => line.replace(/^[١٢٣]\./, '').trim()) || [];
+
+  return {
+    en: {
+      strengths: englishStrengths,
+      improvements: englishImprovements,
+      actions: englishActions,
+    },
+    ar: {
+      strengths: arabicStrengths,
+      improvements: arabicImprovements,
+      actions: arabicActions,
+    },
+  };
+}
+
+function extractGrade(feedback: string): string {
+  const gradeMatch = feedback.match(/Grade:\s*([A-F])/i);
+  return gradeMatch ? gradeMatch[1] : 'N/A';
+}
+
+export async function gradeResponse(responseId: string) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return { success: false, error: 'Unauthorized' };
+    }
+
+    await dbConnect();
+
+    // Get the response
+    const response = await Response.findById(responseId);
+    if (!response) {
+      return { success: false, error: 'Response not found' };
+    }
+
+    // Get AI feedback
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content: `You are a helpful teaching assistant that grades student responses and provides constructive feedback. The student is learning English, and you should provide feedback in both English and Egyptian Arabic dialect (العامية المصرية - not Modern Standard Arabic).
+
+When writing in Egyptian Arabic, use everyday Egyptian expressions and the way Egyptians actually speak. For example, use words like:
+- "عايز/عاوز" instead of "أريد"
+- "بتاع" instead of "خاص"
+- "عشان" instead of "لأن"
+- "دلوقتي" instead of "الآن"
+- "ازاي" instead of "كيف"
+
+In your feedback, always quote specific parts of the student's text to illustrate your points. Use quotation marks ("") when referencing the text.
+
+Format your response exactly as follows:
+
+Grade: [A/B/C/D/F]
+
+English Feedback:
+Strengths:
+• [Point 1 with specific example: "quote from text"]
+• [Point 2 with specific example: "quote from text"]
+
+Areas for Improvement:
+• [Point 1 with specific example: "quote from text"] → Suggested improvement
+• [Point 2 with specific example: "quote from text"] → Suggested improvement
+
+Action Items:
+1. [Specific action based on improvement point 1]
+2. [Specific action based on improvement point 2]
+3. [General action for overall improvement]
+
+التقييم بالعامية المصرية:
+النقاط الحلوة:
+• [النقطة ١ مع مثال: "اقتباس من النص"]
+• [النقطة ٢ مع مثال: "اقتباس من النص"]
+
+المحتاج شغل:
+• [النقطة ١ مع مثال: "اقتباس من النص"] ← التحسين المقترح
+• [النقطة ٢ مع مثال: "اقتباس من النص"] ← التحسين المقترح
+
+عشان تتحسن لازم:
+١. [خطوة محددة بناءً على نقطة التحسين الأولى]
+٢. [خطوة محددة بناءً على نقطة التحسين الثانية]
+٣. [خطوة عامة للتحسين الشامل]`,
+        },
+        {
+          role: 'user',
+          content: `Student's Response: ${response.content}\n\nPlease provide a grade and structured feedback following the format exactly. Make sure to include specific quotes from the text to support your feedback points.`,
+        },
+      ],
+    });
+
+    const feedbackContent = completion.choices[0]?.message?.content || '';
+
+    const feedback: Feedback = {
+      grade: extractGrade(feedbackContent),
+      advice: extractBilingualFeedback(feedbackContent),
+    };
+
+    // Update the response with feedback
+    await Response.findByIdAndUpdate(responseId, { feedback });
+
+    return { success: true, data: feedback };
+  } catch (error) {
+    console.error('Error grading response:', error);
+    return { success: false, error: 'Failed to grade response' };
   }
 }
